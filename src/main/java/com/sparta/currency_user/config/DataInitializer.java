@@ -2,8 +2,6 @@ package com.sparta.currency_user.config;
 
 import com.sparta.currency_user.entity.Currency;
 import com.sparta.currency_user.repository.CurrencyRepository;
-import com.sparta.currency_user.repository.UserCurrencyRepository;
-import com.sparta.currency_user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
