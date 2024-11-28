@@ -62,7 +62,9 @@ public class UserCurrencyService {
             throw new CustomException(ErrorCode.CURRENCY_NOT_FOUND);
         }
 
+        // userId의 유효성 검사를 위한 구문
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_USER));
+
         UserCurrency userCurrency = userCurrencyRepository.findById(exchangeId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_CURRENCY));
 
         if (userId != userCurrency.getUser().getId()) {
@@ -72,5 +74,10 @@ public class UserCurrencyService {
         userCurrency.updateStatus(Status.CANCELLED);
 
         return new CancelledExchangeResponseDto(exchangeId, Status.CANCELLED, "환전 요청이 취소되었습니다.");
+    }
+
+    public List<TotalExchangeResponseDto> findTotalExchangeById() {
+
+        return userCurrencyRepository.findTotalExchangeById();
     }
 }

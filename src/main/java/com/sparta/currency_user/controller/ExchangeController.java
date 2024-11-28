@@ -1,9 +1,6 @@
 package com.sparta.currency_user.controller;
 
-import com.sparta.currency_user.dto.CancelledExchangeResponseDto;
-import com.sparta.currency_user.dto.ExchangeRequestDto;
-import com.sparta.currency_user.dto.ExchangeResponseDto;
-import com.sparta.currency_user.dto.FindExchangeResponseDto;
+import com.sparta.currency_user.dto.*;
 import com.sparta.currency_user.exception.CustomException;
 import com.sparta.currency_user.service.UserCurrencyService;
 import jakarta.validation.Valid;
@@ -22,16 +19,25 @@ public class ExchangeController {
 
     @PostMapping("/{userId}")
     public ResponseEntity<ExchangeResponseDto> requestExchange(@PathVariable Long userId, @RequestBody @Valid ExchangeRequestDto dto) throws CustomException {
+
         return ResponseEntity.ok().body(userCurrencyService.requestExchange(userId, dto));
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<FindExchangeResponseDto>> getExchangeById(@PathVariable Long userId) throws CustomException {
+
         return ResponseEntity.ok().body(userCurrencyService.findExchangeById(userId));
     }
 
     @PatchMapping("/{userId}")
     public ResponseEntity<CancelledExchangeResponseDto> updateExchangeById(@PathVariable Long userId, @RequestParam Long exchangeId) throws CustomException {
+
         return ResponseEntity.ok().body(userCurrencyService.cancelExchangeById(userId, exchangeId));
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<List<TotalExchangeResponseDto>> getExchangeTotal() {
+
+        return ResponseEntity.ok().body(userCurrencyService.findTotalExchangeById());
     }
 }
