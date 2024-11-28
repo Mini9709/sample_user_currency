@@ -3,6 +3,9 @@ package com.sparta.currency_user.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 public class User extends BaseEntity {
@@ -12,6 +15,9 @@ public class User extends BaseEntity {
 
     private String name;
     private String email;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserCurrency> userCurrencies = new ArrayList<>();
 
     public User(String name, String email) {
         this.name = name;
