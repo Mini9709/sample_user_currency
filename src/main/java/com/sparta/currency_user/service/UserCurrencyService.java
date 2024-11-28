@@ -4,15 +4,15 @@ import com.sparta.currency_user.dto.*;
 import com.sparta.currency_user.entity.Currency;
 import com.sparta.currency_user.entity.User;
 import com.sparta.currency_user.entity.UserCurrency;
+import com.sparta.currency_user.enumclass.ErrorCode;
 import com.sparta.currency_user.enumclass.Status;
+import com.sparta.currency_user.exception.CustomException;
 import com.sparta.currency_user.repository.CurrencyRepository;
 import com.sparta.currency_user.repository.UserCurrencyRepository;
 import com.sparta.currency_user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,10 +26,14 @@ public class UserCurrencyService {
     private final UserCurrencyRepository userCurrencyRepository;
 
     @Transactional
-    public ExchangeResponseDto requestExchange(Long userId, ExchangeRequestDto dto) {
+    public ExchangeResponseDto requestExchange(Long userId, ExchangeRequestDto dto) throws CustomException {
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        Currency currency =  currencyRepository.findById(dto.getToCurrencyId()).orElseThrow(() -> new IllegalArgumentException("통화를 찾을 수 없습니다."));
+        if (userId == null) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_USER));
+        Currency currency =  currencyRepository.findById(dto.getToCurrencyId()).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_CURRENCY));
 
         BigDecimal amountAfterExchange = BigDecimal.valueOf(dto.getAmountInKrw()).divide(currency.getExchangeRate(), 2, BigDecimal.ROUND_HALF_UP);
 
@@ -38,16 +42,31 @@ public class UserCurrencyService {
         return new ExchangeResponseDto(savedExchange.getAmountAfterExchange(), Status.NORMAL, "환전 요청이 완료되었습니다.");
     }
 
-    public List<FindExchangeResponseDto> findExchangeById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다.")).getUserCurrencies().stream().map(FindExchangeResponseDto::toDto).toList();
+    public List<FindExchangeResponseDto> findExchangeById(Long userId) throws CustomException {
+
+        if (userId == null) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        return userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_USER)).getUserCurrencies().stream().map(FindExchangeResponseDto::toDto).toList();
     }
 
     @Transactional
-    public CancelledExchangeResponseDto cancelExchangeById(Long userId, Long exchangeId) {
-        UserCurrency userCurrency = userCurrencyRepository.findById(exchangeId).orElseThrow(() -> new IllegalArgumentException("해당 요청을 찾을 수 없습니다."));
+    public CancelledExchangeResponseDto cancelExchangeById(Long userId, Long exchangeId) throws CustomException {
+
+        if (userId == null) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        if (exchangeId == null) {
+            throw new CustomException(ErrorCode.CURRENCY_NOT_FOUND);
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_USER));
+        UserCurrency userCurrency = userCurrencyRepository.findById(exchangeId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_CURRENCY));
 
         if (userId != userCurrency.getUser().getId()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 요청의 권리가 없습니다.");
+            throw new CustomException(ErrorCode.FORBBIDEN_USER);
         }
 
         userCurrency.updateStatus(Status.CANCELLED);
