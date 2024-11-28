@@ -13,6 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
 
     public UserResponseDto findById(Long id) {
@@ -38,5 +39,4 @@ public class UserService {
         this.findUserById(id);
         userRepository.deleteById(id);
     }
-
 }
