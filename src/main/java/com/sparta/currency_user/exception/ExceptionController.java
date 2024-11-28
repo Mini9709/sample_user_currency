@@ -15,6 +15,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionController {
 
+    // 사용자 지정 예외처리 기능
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Map<String, String>> customExceptionHandler(CustomException ex) {
 

@@ -25,6 +25,7 @@ public class UserCurrencyService {
     private final CurrencyRepository currencyRepository;
     private final UserCurrencyRepository userCurrencyRepository;
 
+    // 환전 요청 기능
     @Transactional
     public ExchangeResponseDto requestExchange(Long userId, ExchangeRequestDto dto) throws CustomException {
 
@@ -42,6 +43,7 @@ public class UserCurrencyService {
         return new ExchangeResponseDto(savedExchange.getAmountAfterExchange(), Status.NORMAL, "환전 요청이 완료되었습니다.");
     }
 
+    // 환전 조회 기능
     public List<FindExchangeResponseDto> findExchangeById(Long userId) throws CustomException {
 
         if (userId == null) {
@@ -51,6 +53,7 @@ public class UserCurrencyService {
         return userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_USER)).getUserCurrencies().stream().map(FindExchangeResponseDto::toDto).toList();
     }
 
+    // 환전 취소 기능
     @Transactional
     public CancelledExchangeResponseDto cancelExchangeById(Long userId, Long exchangeId) throws CustomException {
 
@@ -76,6 +79,7 @@ public class UserCurrencyService {
         return new CancelledExchangeResponseDto(exchangeId, Status.CANCELLED, "환전 요청이 취소되었습니다.");
     }
 
+    // 환전 총합 기능
     public List<TotalExchangeResponseDto> findTotalExchangeById() {
 
         return userCurrencyRepository.findTotalExchangeById();
