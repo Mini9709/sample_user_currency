@@ -35,7 +35,7 @@ public class UserCurrencyService {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_USER));
         Currency currency =  currencyRepository.findById(dto.getToCurrencyId()).orElseThrow(() -> new CustomException(ErrorCode.INVALID_PARAMETER_CURRENCY));
 
-        BigDecimal amountAfterExchange = BigDecimal.valueOf(dto.getAmountInKrw()).divide(currency.getExchangeRate(), 2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal amountAfterExchange = BigDecimal.valueOf(dto.getAmountInKrw()).divide(currency.getExchangeRate().multiply(currency.getBaseCurrency()), 2, BigDecimal.ROUND_HALF_UP);
 
         UserCurrency savedExchange = userCurrencyRepository.save(new UserCurrency(dto.getAmountInKrw(), amountAfterExchange, Status.NORMAL, user, currency));
 

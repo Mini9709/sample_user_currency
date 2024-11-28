@@ -22,9 +22,9 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        Currency currency1 = new Currency("달러", BigDecimal.valueOf(-1), "$");
-        Currency currency2 = new Currency("원", BigDecimal.valueOf(1000), "₩");
-        Currency currency3 = new Currency("엔", BigDecimal.valueOf(900), "¥");
+        Currency currency1 = new Currency("테스트 통화1", BigDecimal.valueOf(-1), "$", BigDecimal.valueOf(10));
+        Currency currency2 = new Currency("테스트 통화2", BigDecimal.valueOf(1000), "₩", BigDecimal.valueOf(1000));
+        Currency currency3 = new Currency("테스트 통화3", BigDecimal.valueOf(900), "¥", BigDecimal.valueOf(1));
 
         currencyRepository.save(currency1);
         currencyRepository.save(currency2);

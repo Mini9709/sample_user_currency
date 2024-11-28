@@ -11,6 +11,7 @@ public class CurrencyResponseDto {
 
     private String currencyName;
     private BigDecimal exchangeRate;
+    private BigDecimal baseCurrency;
     private String symbol;
 
     public CurrencyResponseDto(Currency currency) {
@@ -18,13 +19,15 @@ public class CurrencyResponseDto {
         this.currencyName = currency.getCurrencyName();
         this.exchangeRate = currency.getExchangeRate();
         this.symbol = currency.getSymbol();
+        this.baseCurrency = currency.getBaseCurrency();
     }
 
-    public CurrencyResponseDto(Long id, String currencyName, BigDecimal exchangeRate, String symbol) {
+    public CurrencyResponseDto(Long id, String currencyName, BigDecimal exchangeRate, String symbol, BigDecimal baseCurrency) {
         this.id = id;
         this.currencyName = currencyName;
         this.exchangeRate = exchangeRate;
         this.symbol = symbol;
+        this.baseCurrency = baseCurrency;
     }
 
     public static CurrencyResponseDto toDto(Currency currency) {
@@ -32,7 +35,8 @@ public class CurrencyResponseDto {
             currency.getId(),
             currency.getCurrencyName(),
             currency.getExchangeRate(),
-            currency.getSymbol()
+            currency.getSymbol(),
+            currency.getBaseCurrency()
         );
     }
 }
